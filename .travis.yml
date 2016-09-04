@@ -14,5 +14,4 @@ language: java
 
 jdk:
   - oraclejdk8
-  - oraclejdk7
 
