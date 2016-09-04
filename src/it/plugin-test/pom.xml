@@ -41,9 +41,23 @@
         <configuration>
           <rules>
             <rule>
-              <classPattern>.*IT</classPattern>
+              <classPattern>net[.]revelc[.]code[.].*IT</classPattern>
               <classAnnotationPattern>org[.]junit[.]experimental[.]categories[.]Category</classAnnotationPattern>
-              <scope>both</scope>
+              <includeTests>true</includeTests>
+            </rule>
+            <rule>
+              <classPattern>net[.]revelc[.]code[.].*</classPattern>
+              <classAnnotationPattern>org[.]junit[.]experimental[.]categories[.]Category</classAnnotationPattern>
+            </rule>
+            <rule>
+              <classPattern>net[.]revelc[.]code[.].*</classPattern>
+              <classAnnotationPattern>org[.]junit[.]experimental[.]categories[.]Category</classAnnotationPattern>
+              <includeTests>true</includeTests>
+            </rule>
+            <rule>
+              <classPattern>net[.]revelc[.]code[.].*</classPattern>
+              <classAnnotationPattern>org[.]junit[.]experimental[.]categories[.]Category</classAnnotationPattern>
+              <includeTests>false</includeTests>
             </rule>
           </rules>
         </configuration>

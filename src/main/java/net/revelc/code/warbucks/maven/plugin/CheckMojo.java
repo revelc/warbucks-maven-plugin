@@ -16,13 +16,14 @@ package net.revelc.code.warbucks.maven.plugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Stream;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
@@ -36,6 +37,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
 import com.google.common.reflect.ClassPath;
+import com.google.common.reflect.ClassPath.ClassInfo;
 
 @Mojo(name = "check", defaultPhase = LifecyclePhase.PROCESS_TEST_CLASSES, threadSafe = true, requiresDependencyResolution = ResolutionScope.TEST)
 public class CheckMojo extends AbstractMojo {
@@ -54,6 +56,19 @@ public class CheckMojo extends AbstractMojo {
   @Parameter(alias = "skip", property = "warbucks.skip", defaultValue = "false")
   private boolean skip;
 
+  /**
+   * Allows ignoring rule failures, so they don't result in a build failure.
+   *
+   * @since 1.0.0
+   */
+  @Parameter(alias = "ignoreRuleFailures", property = "warbucks.ignoreRuleFailures", defaultValue = "false")
+  private boolean ignoreRuleFailures;
+
+  /**
+   * The rules for this plugin to check.
+   *
+   * @since 1.0.0
+   */
   @Parameter(alias = "rules", required = true)
   private List<Rule> rules;
 
@@ -69,59 +84,54 @@ public class CheckMojo extends AbstractMojo {
       return;
     }
 
+    int ruleNumber = 1;
     for (Rule r : rules) {
-      processRule(r);
+      getLog().debug("Processing rule number " + ruleNumber);
+      processRule(r, ruleNumber);
+      ruleNumber++;
     }
   }
 
-  private void processRule(Rule r) throws MojoExecutionException {
-    Set<String> classPathElements = new HashSet<>();
-    Scope scope = r.getScope();
-    try {
-      Stream.concat(project.getCompileClasspathElements().stream(), project.getRuntimeClasspathElements().stream());
-      switch (scope) {
-        case COMPILE:
-          classPathElements.addAll(project.getCompileClasspathElements());
-          break;
-        case TEST:
-          classPathElements.addAll(project.getTestClasspathElements());
-          classPathElements.removeAll(project.getCompileClasspathElements());
-          break;
-        case BOTH:
-          classPathElements.addAll(project.getCompileClasspathElements());
-          classPathElements.addAll(project.getTestClasspathElements());
-          break;
-        default:
-          throw new MojoExecutionException("Unknown scope: " + scope);
+  private void processRule(Rule r, int ruleNumber) throws MojoExecutionException, MojoFailureException {
+    Pattern classPattern = Pattern.compile(r.getClassPattern());
+    Pattern classAnnotationPattern = Pattern.compile(r.getClassAnnotationPattern());
+    try (URLClassLoader cl = new URLClassLoader(getURLs(r.getIncludeTests() ? project.getTestClasspathElements() : project.getCompileClasspathElements()))) {
+      List<ClassInfo> failedClasses = ClassPath.from(cl).getAllClasses().stream().filter(x -> classPattern.matcher(x.getName()).matches()).filter(x -> {
+        boolean foundMatch = false;
+        for (Annotation s : x.load().getAnnotations()) {
+          getLog().debug("Found annotation class '" + s.annotationType().getName() + "' on class '" + x.getName() + "'");
+          if (classAnnotationPattern.matcher(s.annotationType().getName()).matches()) {
+            foundMatch = true;
+            break;
+          }
+        }
+        return !foundMatch; // filter non-matching classes
+      }).collect(Collectors.toList());
+      if (failedClasses.isEmpty()) {
+        getLog().debug("All matching classes for rule " + ruleNumber + " were annotated with a matching annotation");
+        return;
       }
-    } catch (DependencyResolutionRequiredException e) {
-      throw new MojoExecutionException("Could not resolve artifacts", e);
-    }
 
-    try (URLClassLoader cl = new URLClassLoader(getURLs(classPathElements))) {
-      ClassPath cp = ClassPath.from(cl);
-      cp.getAllClasses().forEach(x -> System.out.println("blahblah: " + x));
-    } catch (IOException e) {
+      String failMessage = "Rule " + ruleNumber + ": Class '%s' did not have an annotation matching the pattern '" + r.getClassAnnotationPattern() + "'";
+      if (ignoreRuleFailures) {
+        failedClasses.forEach(x -> getLog().warn(String.format(failMessage, x.getName())));
+      } else {
+        failedClasses.forEach(x -> getLog().error(String.format(failMessage, x.getName())));
+        throw new MojoFailureException("Some rules failed. See above output for details.");
+      }
+    } catch (IOException | DependencyResolutionRequiredException e) {
       throw new MojoExecutionException("Problem loading classes", e);
     }
   }
 
-  private URL[] getURLs(Set<String> classPathElements) throws MojoExecutionException {
-    try {
-      return classPathElements.stream().map(element -> {
-        try {
-          return new File(element).toURI().toURL();
-        } catch (MalformedURLException e) {
-          throw new RuntimeException(e);
-        }
-      }).toArray(URL[]::new);
-    } catch (RuntimeException e) {
-      if (e.getCause() instanceof MalformedURLException) {
-        throw new MojoExecutionException("Problem loading classes", e.getCause());
-      } else {
-        throw e;
+  private URL[] getURLs(Collection<String> classPathElements) {
+    return classPathElements.stream().distinct().map(element -> {
+      try {
+        return new File(element).toURI().toURL();
+      } catch (MalformedURLException e) {
+        throw new AssertionError("Could not convert class path element to URL", e);
       }
-    }
+    }).toArray(URL[]::new);
   }
 
 }

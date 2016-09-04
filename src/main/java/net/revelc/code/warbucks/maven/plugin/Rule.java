@@ -16,23 +16,14 @@
  */
 package net.revelc.code.warbucks.maven.plugin;
 
-import java.util.Arrays;
-
 public class Rule {
 
-  private String scope;
+  private boolean includeTests;
   private String classPattern;
   private String classAnnotationPattern;
 
-  public Scope getScope() {
-    if (scope == null || scope.isEmpty()) {
-      return Scope.BOTH;
-    }
-    try {
-      return Scope.valueOf(scope.toUpperCase());
-    } catch (IllegalArgumentException e) {
-      throw new IllegalArgumentException("Unrecognized scope '" + scope + "' declared for rule. Scope must be one of " + Arrays.toString(Scope.values()) + ".");
-    }
+  public boolean getIncludeTests() {
+    return includeTests;
   }
 
   public String getClassPattern() {
