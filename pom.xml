@@ -247,6 +247,7 @@
         <artifactId>site-maven-plugin</artifactId>
         <executions>
           <execution>
+            <id>create-github-pages</id>
             <goals>
               <goal>site</goal>
             </goals>
