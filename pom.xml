@@ -61,12 +61,12 @@
   <distributionManagement>
     <!-- https://issues.sonatype.org/browse/OSSRH-15142 -->
     <repository>
-      <id>oss.releases.https</id>
+      <id>sonatype-nexus-staging</id>
       <name>Sonatype Release Distribution Staging Repository</name>
       <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
     </repository>
     <snapshotRepository>
-      <id>oss.snapshots.https</id>
+      <id>sonatype-nexus-snapshots</id>
       <name>Sonatype Snapshot Distribution Repository</name>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
     </snapshotRepository>
