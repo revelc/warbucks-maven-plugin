@@ -21,7 +21,7 @@
   </parent>
   <groupId>net.revelc.code</groupId>
   <artifactId>warbucks-maven-plugin</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
   <name>Warbucks Maven Plugin</name>
   <description>A Maven plugin to enforce the requirement for particular annotations (for specified classes)</description>
@@ -51,7 +51,7 @@
   <scm>
     <connection>scm:git:https://github.com/revelc/warbucks-maven-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:revelc/warbucks-maven-plugin.git</developerConnection>
-    <tag>warbucks-maven-plugin-1.0.0</tag>
+    <tag>HEAD</tag>
     <url>https://github.com/revelc/warbucks-maven-plugin</url>
   </scm>
   <issueManagement>
