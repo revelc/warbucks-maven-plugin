@@ -83,6 +83,7 @@
     <mavenPluginToolsVersion>3.5</mavenPluginToolsVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <sourceReleaseAssemblyDescriptor>source-release-tar</sourceReleaseAssemblyDescriptor>
   </properties>
   <dependencyManagement>
     <dependencies>
