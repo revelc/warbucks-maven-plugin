@@ -41,23 +41,24 @@
         <configuration>
           <rules>
             <rule>
+              <classPattern>.*</classPattern>
+              <classAnnotationPattern>org[.]junit[.]experimental[.]categories[.]Category</classAnnotationPattern>
+              <includeMainClasses>false</includeMainClasses>
+              <includeTestClasses>true</includeTestClasses>
+            </rule>
+            <rule>
+              <classPattern>net[.]revelc[.]code[.].*</classPattern>
+              <classAnnotationPattern>org[.]junit[.]experimental[.]categories[.]Category</classAnnotationPattern>
+            </rule>
+            <rule>
               <classPattern>net[.]revelc[.]code[.].*IT</classPattern>
               <classAnnotationPattern>org[.]junit[.]experimental[.]categories[.]Category</classAnnotationPattern>
-              <includeTests>true</includeTests>
+              <includeTestClasses>true</includeTestClasses>
             </rule>
             <rule>
-              <classPattern>net[.]revelc[.]code[.].*</classPattern>
+              <classPattern>.*</classPattern>
               <classAnnotationPattern>org[.]junit[.]experimental[.]categories[.]Category</classAnnotationPattern>
-            </rule>
-            <rule>
-              <classPattern>net[.]revelc[.]code[.].*</classPattern>
-              <classAnnotationPattern>org[.]junit[.]experimental[.]categories[.]Category</classAnnotationPattern>
-              <includeTests>true</includeTests>
-            </rule>
-            <rule>
-              <classPattern>net[.]revelc[.]code[.].*</classPattern>
-              <classAnnotationPattern>org[.]junit[.]experimental[.]categories[.]Category</classAnnotationPattern>
-              <includeTests>false</includeTests>
+              <includeTestClasses>false</includeTestClasses>
             </rule>
           </rules>
         </configuration>

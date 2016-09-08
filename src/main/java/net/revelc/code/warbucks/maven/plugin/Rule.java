@@ -18,20 +18,25 @@ package net.revelc.code.warbucks.maven.plugin;
 
 public class Rule {
 
-  private boolean includeTests;
-  private String classPattern;
   private String classAnnotationPattern;
+  private String classPattern;
+  private boolean includeMainClasses = true;
+  private boolean includeTestClasses = false;
 
-  public boolean getIncludeTests() {
-    return includeTests;
+  public String getClassAnnotationPattern() {
+    return classAnnotationPattern;
   }
 
   public String getClassPattern() {
     return classPattern;
   }
 
-  public String getClassAnnotationPattern() {
-    return classAnnotationPattern;
+  public boolean getIncludeMainClasses() {
+    return includeMainClasses;
+  }
+
+  public boolean getIncludeTestClasses() {
+    return includeTestClasses;
   }
 
 }
