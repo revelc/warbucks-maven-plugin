@@ -76,7 +76,7 @@
     <github.site.repositoryOwner>revelc</github.site.repositoryOwner>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <maven.min-version>3.0.5</maven.min-version>
+    <maven.min-version>3.2.5</maven.min-version>
     <!-- skip standard site deployment, because site is deployed using github plugin instead -->
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
     <maven.tools-version>3.2.5</maven.tools-version>
