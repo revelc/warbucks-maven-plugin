@@ -23,6 +23,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -68,8 +69,10 @@ class RuleProcessor {
   long process() throws MojoExecutionException {
     debug("Begin processing");
     try (URLClassLoader cl = new URLClassLoader(getURLs(mojo.project.getTestClasspathElements()))) {
-      long failures = ClassPath.from(cl).getAllClasses().stream().filter(isProjectClass()).filter(matchesClassPattern())
+      AtomicLong matches = new AtomicLong(0);
+      long failures = ClassPath.from(cl).getAllClasses().stream().filter(isProjectClass()).filter(matchesClassPattern()).peek(x -> matches.incrementAndGet())
           .filter(hasRequiredAnnotation().negate()).count();
+      info("Class Matches: " + matches.get());
       info("Class Failures: " + failures);
       return failures;
     } catch (IOException | DependencyResolutionRequiredException e) {
