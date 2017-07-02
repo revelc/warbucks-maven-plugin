@@ -26,6 +26,7 @@
   <name>Warbucks Maven Plugin</name>
   <description>A Maven plugin to enforce the requirement for particular annotations (for specified classes)</description>
   <url>http://code.revelc.net/warbucks-maven-plugin</url>
+  <inceptionYear>2016</inceptionYear>
   <organization>
     <name>Revelc</name>
     <url>https://github.com/revelc</url>
