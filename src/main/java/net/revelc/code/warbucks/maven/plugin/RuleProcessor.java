@@ -17,6 +17,7 @@ package net.revelc.code.warbucks.maven.plugin;
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -68,8 +69,13 @@ class RuleProcessor {
     debug("Begin processing");
     try (URLClassLoader cl = new URLClassLoader(getURLs(mojo.project.getTestClasspathElements()))) {
       AtomicLong matches = new AtomicLong(0);
-      long failures = ClassPath.from(cl).getAllClasses().stream().filter(isProjectClass()).filter(matchesClassPattern()).peek(x -> matches.incrementAndGet())
-          .filter(hasRequiredAnnotation().negate()).count();
+      long failures = ClassPath.from(cl).getAllClasses().stream()
+          .filter(isProjectClass())
+          .filter(matchesClassPattern())
+          .filter(isValidModifier())
+          .peek(x -> matches.incrementAndGet())
+          .filter(hasRequiredAnnotation().negate())
+          .count();
       info("Class Matches: " + matches.get());
       info("Class Failures: " + failures);
       return failures;
@@ -92,6 +98,21 @@ class RuleProcessor {
       }
       return foundMainClass || foundTestClass;
     };
+  }
+
+  private Predicate<ClassInfo> isValidModifier() {
+    return clz -> {
+      int mod = clz.load().getModifiers();
+      if (Modifier.isPublic(mod)) {
+        return rule.getIncludePublicClasses();
+      } else if (Modifier.isProtected(mod)) {
+        return rule.getIncludeProtectedClasses();
+      } else if (Modifier.isPrivate(mod)) {
+        return rule.getIncludePrivateClasses();
+      } else {
+        return rule.getIncludePackagePrivateClasses();
+      }
+     };
   }
 
   // only check classes which match the specified pattern
