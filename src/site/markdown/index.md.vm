@@ -43,10 +43,18 @@ Getting Started
         <version>${project.version}</version>
         <configuration>
           <rules>
-            <!-- Example rule to ensure integration tests have a JUnit Category -->
+            <!-- Example rule to ensure Public integration tests have a JUnit Category -->
             <rule>
               <!-- a pattern of classes for which to check annotations -->
               <classPattern>.*IT</classPattern>
+              <!-- include the classes which have Public modifier -->
+              <includePublicClasses>true</includePublicClasses>
+              <!-- exclude the classes which have Package-private modifier -->
+              <includePackagePrivateClasses>false</includePackagePrivateClasses>
+              <!-- exclude the classes which have Protected modifier -->
+              <includeProtectedClasses>false</includeProtectedClasses>
+              <!-- exclude the classes which have Private modifier -->
+              <includePrivateClasses>false</includePrivateClasses>
               <!-- a pattern of annotations which are required for the specified classes -->
               <classAnnotationPattern>org[.]junit[.]experimental[.]categories[.]Category</classAnnotationPattern>
             </rule>

@@ -14,6 +14,7 @@
 
 package net.revelc.code.warbucks.maven.plugin;
 
+import com.google.common.annotations.VisibleForTesting;
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -101,18 +102,24 @@ class RuleProcessor {
   }
 
   private Predicate<ClassInfo> isValidModifier() {
-    return clz -> {
-      int mod = clz.load().getModifiers();
-      if (Modifier.isPublic(mod)) {
-        return rule.getIncludePublicClasses();
-      } else if (Modifier.isProtected(mod)) {
-        return rule.getIncludeProtectedClasses();
-      } else if (Modifier.isPrivate(mod)) {
-        return rule.getIncludePrivateClasses();
-      } else {
-        return rule.getIncludePackagePrivateClasses();
-      }
-     };
+    return classInfo ->
+      rule.getIncludePublicClasses() && rule.getIncludeProtectedClasses() &&
+        rule.getIncludePackagePrivateClasses() && rule.getIncludePrivateClasses() ? true
+        : isValidModifier(classInfo.load(), rule);
+  }
+
+  @VisibleForTesting
+  static boolean isValidModifier(Class clz, Rule rule) {
+    int mod = clz.getModifiers();
+    if (Modifier.isPublic(mod)) {
+      return rule.getIncludePublicClasses();
+    } else if (Modifier.isProtected(mod)) {
+      return rule.getIncludeProtectedClasses();
+    } else if (Modifier.isPrivate(mod)) {
+      return rule.getIncludePrivateClasses();
+    } else {
+      return rule.getIncludePackagePrivateClasses();
+    }
   }
 
   // only check classes which match the specified pattern

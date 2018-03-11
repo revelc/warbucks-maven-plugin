@@ -82,6 +82,7 @@
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
     <maven.tools-version>3.2.5</maven.tools-version>
     <mavenPluginToolsVersion>3.5</mavenPluginToolsVersion>
+    <mockitoVersion>1.10.19</mockitoVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <sourceReleaseAssemblyDescriptor>source-release-tar</sourceReleaseAssemblyDescriptor>
@@ -113,6 +114,11 @@
         <artifactId>maven-plugin-annotations</artifactId>
         <version>${mavenPluginToolsVersion}</version>
       </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-all</artifactId>
+        <version>${mockitoVersion}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <dependencies>
@@ -138,6 +144,11 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
