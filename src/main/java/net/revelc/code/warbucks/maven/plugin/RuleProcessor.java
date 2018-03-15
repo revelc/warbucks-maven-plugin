@@ -14,7 +14,6 @@
 
 package net.revelc.code.warbucks.maven.plugin;
 
-import com.google.common.annotations.VisibleForTesting;
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -22,6 +21,8 @@ import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Predicate;
@@ -31,6 +32,7 @@ import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.reflect.ClassPath;
 import com.google.common.reflect.ClassPath.ClassInfo;
 
@@ -68,15 +70,11 @@ class RuleProcessor {
   // returns the number of rule failures
   long process() throws MojoExecutionException {
     debug("Begin processing");
-    try (URLClassLoader cl = new URLClassLoader(getURLs(mojo.project.getTestClasspathElements()))) {
+    try (URLClassLoader cl = getClassLoader()) {
       AtomicLong matches = new AtomicLong(0);
-      long failures = ClassPath.from(cl).getAllClasses().stream()
-          .filter(isProjectClass())
-          .filter(matchesClassPattern())
-          .filter(isValidModifier())
-          .peek(x -> matches.incrementAndGet())
-          .filter(hasRequiredAnnotation().negate())
-          .count();
+      long failures = ClassPath.from(cl).getAllClasses().stream().filter(isProjectClass())
+          .filter(matchesClassPattern()).filter(isValidModifier())
+          .peek(x -> matches.incrementAndGet()).filter(hasRequiredAnnotation().negate()).count();
       info("Class Matches: " + matches.get());
       info("Class Failures: " + failures);
       return failures;
@@ -85,13 +83,23 @@ class RuleProcessor {
     }
   }
 
-  // verifies that the class is part of this project, and not included in the classloader as a dependency
+  private URLClassLoader getClassLoader() throws DependencyResolutionRequiredException {
+    URL[] urls = getURLs(mojo.project.getTestClasspathElements());
+    // best practice is to create class loaders in doPrivileged blocks; caught by findbugs
+    return AccessController
+        .doPrivileged((PrivilegedAction<URLClassLoader>) (() -> new URLClassLoader(urls)));
+  }
+
+  // verifies that the class is part of this project, and not included in the classloader as a
+  // dependency
   private Predicate<ClassInfo> isProjectClass() {
     String mainDir = mojo.project.getBuild().getOutputDirectory();
     String testDir = mojo.project.getBuild().getTestOutputDirectory();
     return x -> {
-      boolean foundMainClass = rule.getIncludeMainClasses() && new File(mainDir, x.getResourceName()).exists();
-      boolean foundTestClass = !foundMainClass && rule.getIncludeTestClasses() && new File(testDir, x.getResourceName()).exists();
+      boolean foundMainClass =
+          rule.getIncludeMainClasses() && new File(mainDir, x.getResourceName()).exists();
+      boolean foundTestClass = !foundMainClass && rule.getIncludeTestClasses()
+          && new File(testDir, x.getResourceName()).exists();
       if (foundMainClass) {
         debug("Found '" + x.getName() + "' in " + mainDir);
       } else if (foundTestClass) {
@@ -102,14 +110,13 @@ class RuleProcessor {
   }
 
   private Predicate<ClassInfo> isValidModifier() {
-    return classInfo ->
-      rule.getIncludePublicClasses() && rule.getIncludeProtectedClasses() &&
-        rule.getIncludePackagePrivateClasses() && rule.getIncludePrivateClasses() ? true
-        : isValidModifier(classInfo.load(), rule);
+    return classInfo -> rule.getIncludePublicClasses() && rule.getIncludeProtectedClasses()
+        && rule.getIncludePackagePrivateClasses() && rule.getIncludePrivateClasses() ? true
+            : isValidModifier(classInfo.load(), rule);
   }
 
   @VisibleForTesting
-  static boolean isValidModifier(Class clz, Rule rule) {
+  static boolean isValidModifier(Class<?> clz, Rule rule) {
     int mod = clz.getModifiers();
     if (Modifier.isPublic(mod)) {
       return rule.getIncludePublicClasses();
@@ -134,14 +141,17 @@ class RuleProcessor {
     return x -> {
       boolean foundMatch = false;
       for (Annotation s : x.load().getAnnotations()) {
-        debug("Found annotation class '" + s.annotationType().getName() + "' on class '" + x.getName() + "'");
+        debug("Found annotation class '" + s.annotationType().getName() + "' on class '"
+            + x.getName() + "'");
         if (classAnnotationPattern.matcher(s.annotationType().getName()).matches()) {
           foundMatch = true;
           break;
         }
       }
       if (!foundMatch) {
-        String failMessage = String.format("Class '%s' did not have an annotation matching the pattern '%s'", x.getName(), rule.getClassAnnotationPattern());
+        String failMessage =
+            String.format("Class '%s' did not have an annotation matching the pattern '%s'",
+                x.getName(), rule.getClassAnnotationPattern());
         if (mojo.ignoreRuleFailures) {
           warn(failMessage);
         } else {

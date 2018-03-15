@@ -26,7 +26,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
-@Mojo(name = "check", defaultPhase = LifecyclePhase.PROCESS_TEST_CLASSES, threadSafe = true, requiresDependencyResolution = ResolutionScope.TEST)
+@Mojo(name = "check", defaultPhase = LifecyclePhase.PROCESS_TEST_CLASSES, threadSafe = true,
+    requiresDependencyResolution = ResolutionScope.TEST)
 public class CheckMojo extends AbstractMojo {
 
   @Parameter(defaultValue = "${project}", readonly = true)
@@ -48,7 +49,8 @@ public class CheckMojo extends AbstractMojo {
    *
    * @since 1.0.0
    */
-  @Parameter(alias = "ignoreRuleFailures", property = "warbucks.ignoreRuleFailures", defaultValue = "false")
+  @Parameter(alias = "ignoreRuleFailures", property = "warbucks.ignoreRuleFailures",
+      defaultValue = "false")
   boolean ignoreRuleFailures;
 
   /**
@@ -56,7 +58,8 @@ public class CheckMojo extends AbstractMojo {
    *
    * @since 1.0.0
    */
-  @Parameter(alias = "processAllRules", property = "warbucks.processAllRules", defaultValue = "true")
+  @Parameter(alias = "processAllRules", property = "warbucks.processAllRules",
+      defaultValue = "true")
   private boolean processAllRules;
 
   /**

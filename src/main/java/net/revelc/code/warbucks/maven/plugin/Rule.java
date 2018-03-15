@@ -24,6 +24,7 @@ public class Rule {
   private boolean includePackagePrivateClasses = true;
   private boolean includeProtectedClasses = true;
   private boolean includePrivateClasses = true;
+
   public String getClassAnnotationPattern() {
     return classAnnotationPattern;
   }
@@ -43,12 +44,15 @@ public class Rule {
   public boolean getIncludePublicClasses() {
     return includePublicClasses;
   }
+
   public boolean getIncludePackagePrivateClasses() {
     return includePackagePrivateClasses;
   }
+
   public boolean getIncludeProtectedClasses() {
     return includeProtectedClasses;
   }
+
   public boolean getIncludePrivateClasses() {
     return includePrivateClasses;
   }

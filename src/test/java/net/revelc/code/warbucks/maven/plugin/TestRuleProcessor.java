@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -30,22 +31,18 @@ public class TestRuleProcessor {
 
   @Test
   public void testValidModifier() {
-    List<Class> allClasses = Arrays.asList(
-      PublicClass.class,
-      PackagePrivateClass.class,
-      ProtectedClass.class,
-      PrivateClass.class
-    );
+    List<Class<?>> allClasses = Arrays.asList(PublicClass.class, PackagePrivateClass.class,
+        ProtectedClass.class, PrivateClass.class);
     int testCount = 0;
     for (EnumSet<Modifier> modifiers : combineModifiers()) {
       assertFalse(modifiers.isEmpty());
       ++testCount;
       Rule rule = createRule(modifiers);
-      List<Class> valid = allClasses.stream()
-        .filter(clz -> RuleProcessor.isValidModifier(clz, rule))
-        .collect(Collectors.toList());
+      List<Class<?>> valid = allClasses.stream()
+          .filter(clz -> RuleProcessor.isValidModifier(clz, rule)).collect(Collectors.toList());
       assertEquals(rule.getIncludePublicClasses(), valid.contains(PublicClass.class));
-      assertEquals(rule.getIncludePackagePrivateClasses(), valid.contains(PackagePrivateClass.class));
+      assertEquals(rule.getIncludePackagePrivateClasses(),
+          valid.contains(PackagePrivateClass.class));
       assertEquals(rule.getIncludeProtectedClasses(), valid.contains(ProtectedClass.class));
       assertEquals(rule.getIncludePrivateClasses(), valid.contains(PrivateClass.class));
     }
@@ -53,12 +50,9 @@ public class TestRuleProcessor {
   }
 
   private static List<EnumSet<Modifier>> combineModifiers() {
-    List<EnumSet<Modifier>> single = Arrays.asList(
-      EnumSet.of(Modifier.PUBLIC),
-      EnumSet.of(Modifier.PACKAGE_PRIVATE),
-      EnumSet.of(Modifier.PROTECTED),
-      EnumSet.of(Modifier.PRIVATE)
-    );
+    List<EnumSet<Modifier>> single =
+        Arrays.asList(EnumSet.of(Modifier.PUBLIC), EnumSet.of(Modifier.PACKAGE_PRIVATE),
+            EnumSet.of(Modifier.PROTECTED), EnumSet.of(Modifier.PRIVATE));
     List<EnumSet<Modifier>> all = new ArrayList<>(single);
     List<EnumSet<Modifier>> last = single;
     for (int i = 1; i < Modifier.values().length; ++i) {
@@ -69,7 +63,7 @@ public class TestRuleProcessor {
   }
 
   private static List<EnumSet<Modifier>> merge(List<EnumSet<Modifier>> lhs,
-    List<EnumSet<Modifier>> rhs, int expectedSize) {
+      List<EnumSet<Modifier>> rhs, int expectedSize) {
     List<EnumSet<Modifier>> merged = new ArrayList<>();
     for (EnumSet<Modifier> s0 : lhs) {
       for (EnumSet<Modifier> s1 : rhs) {
@@ -78,8 +72,7 @@ public class TestRuleProcessor {
         }
         EnumSet<Modifier> merge = EnumSet.copyOf(s0);
         merge.addAll(s1);
-        if (merge.size() == expectedSize
-          && !merged.contains(merge)) {
+        if (merge.size() == expectedSize && !merged.contains(merge)) {
           merged.add(merge);
         }
       }
@@ -118,8 +111,15 @@ public class TestRuleProcessor {
     PUBLIC, PACKAGE_PRIVATE, PROTECTED, PRIVATE
   }
 
-  public static class PublicClass {}
-  static class PackagePrivateClass {}
-  protected static class ProtectedClass {}
-  private static class PrivateClass {}
+  public static class PublicClass {
+  }
+
+  static class PackagePrivateClass {
+  }
+
+  protected static class ProtectedClass {
+  }
+
+  private static class PrivateClass {
+  }
 }
