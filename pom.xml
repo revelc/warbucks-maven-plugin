@@ -82,7 +82,7 @@
     <!-- skip standard site deployment, because site is deployed using github plugin instead -->
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
     <maven.tools-version>3.2.5</maven.tools-version>
-    <mavenPluginToolsVersion>3.5</mavenPluginToolsVersion>
+    <mavenPluginToolsVersion>3.5.1</mavenPluginToolsVersion>
     <mockitoVersion>1.10.19</mockitoVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -156,6 +156,20 @@
   <build>
     <pluginManagement>
       <plugins>
+        <!-- check for version updates with 'mvn versions:display-plugin-updates' -->
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>versions-maven-plugin</artifactId>
+          <version>2.5</version>
+        </plugin>
+        <plugin>
+          <groupId>org.gaul</groupId>
+          <artifactId>modernizer-maven-plugin</artifactId>
+          <version>1.6.0</version>
+          <configuration>
+            <javaVersion>${maven.compiler.target}</javaVersion>
+          </configuration>
+        </plugin>
         <plugin>
           <groupId>com.github.github</groupId>
           <artifactId>site-maven-plugin</artifactId>
@@ -178,6 +192,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.7.0</version>
           <configuration>
             <optimize>true</optimize>
             <showDeprecation>true</showDeprecation>
@@ -202,7 +217,7 @@
         <plugin>
           <groupId>net.revelc.code.formatter</groupId>
           <artifactId>formatter-maven-plugin</artifactId>
-          <version>2.7.0</version>
+          <version>2.7.2</version>
           <configuration>
             <compilerCompliance>${maven.compiler.source}</compilerCompliance>
             <compilerSource>${maven.compiler.source}</compilerSource>
@@ -218,7 +233,6 @@
           </configuration>
         </plugin>
         <plugin>
-          <!-- this plugin requires java 1.8 and should only be used in a jdk8 profile -->
           <groupId>net.revelc.code</groupId>
           <artifactId>impsort-maven-plugin</artifactId>
           <version>1.0.1</version>
@@ -284,6 +298,18 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.gaul</groupId>
+        <artifactId>modernizer-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>modernizer</id>
+            <goals>
+              <goal>modernizer</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <executions>
@@ -309,12 +335,12 @@
             </goals>
             <configuration>
               <rules>
-                <requireJavaVersion>
-                  <version>[${maven.compiler.source},)</version>
-                </requireJavaVersion>
                 <requireMavenVersion>
                   <version>[${maven.min-version},)</version>
                 </requireMavenVersion>
+                <requireJavaVersion>
+                  <version>[${maven.compiler.target},)</version>
+                </requireJavaVersion>
               </rules>
             </configuration>
           </execution>
@@ -445,6 +471,19 @@
                         <versionRange>[0,)</versionRange>
                         <goals>
                           <goal>sort</goal>
+                        </goals>
+                      </pluginExecutionFilter>
+                      <action>
+                        <ignore />
+                      </action>
+                    </pluginExecution>
+                    <pluginExecution>
+                      <pluginExecutionFilter>
+                        <groupId>org.gaul</groupId>
+                        <artifactId>modernizer-maven-plugin</artifactId>
+                        <versionRange>[0,)</versionRange>
+                        <goals>
+                          <goal>modernizer</goal>
                         </goals>
                       </pluginExecutionFilter>
                       <action>
