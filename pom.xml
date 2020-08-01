@@ -17,11 +17,11 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>20</version>
+    <version>23</version>
   </parent>
   <groupId>net.revelc.code</groupId>
   <artifactId>warbucks-maven-plugin</artifactId>
-  <version>1.1.3-SNAPSHOT</version>
+  <version>1.2.0-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
   <name>Warbucks Maven Plugin</name>
   <description>A Maven plugin to enforce the requirement for particular annotations (for specified classes)</description>
@@ -79,11 +79,9 @@
     <maven.compiler.release>8</maven.compiler.release>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <maven.min-version>3.0.5</maven.min-version>
+    <maven.min-version>3.6.0</maven.min-version>
     <!-- skip standard site deployment, because site is deployed using github plugin instead -->
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
-    <maven.tools-version>3.2.5</maven.tools-version>
-    <mavenPluginToolsVersion>3.5.2</mavenPluginToolsVersion>
     <mockitoVersion>1.10.19</mockitoVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -94,27 +92,27 @@
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
-        <version>19.0</version>
+        <version>29.0-jre</version>
       </dependency>
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.12</version>
+        <version>4.13</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-core</artifactId>
-        <version>${maven.tools-version}</version>
+        <version>3.6.3</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-plugin-api</artifactId>
-        <version>${maven.tools-version}</version>
+        <version>3.6.3</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-annotations</artifactId>
-        <version>${mavenPluginToolsVersion}</version>
+        <version>3.6.0</version>
       </dependency>
       <dependency>
         <groupId>org.mockito</groupId>
@@ -161,12 +159,12 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>versions-maven-plugin</artifactId>
-          <version>2.5</version>
+          <version>2.7</version>
         </plugin>
         <plugin>
           <groupId>org.gaul</groupId>
           <artifactId>modernizer-maven-plugin</artifactId>
-          <version>1.6.0</version>
+          <version>1.8.0</version>
           <configuration>
             <javaVersion>${maven.compiler.target}</javaVersion>
           </configuration>
@@ -179,7 +177,7 @@
         <plugin>
           <groupId>com.github.ekryd.sortpom</groupId>
           <artifactId>sortpom-maven-plugin</artifactId>
-          <version>2.8.0</version>
+          <version>2.10.0</version>
           <configuration>
             <predefinedSortOrder>recommended_2008_06</predefinedSortOrder>
             <createBackupFile>false</createBackupFile>
@@ -218,7 +216,7 @@
         <plugin>
           <groupId>net.revelc.code.formatter</groupId>
           <artifactId>formatter-maven-plugin</artifactId>
-          <version>2.7.4</version>
+          <version>2.11.0</version>
           <configuration>
             <compilerCompliance>${maven.compiler.source}</compilerCompliance>
             <compilerSource>${maven.compiler.source}</compilerSource>
@@ -236,7 +234,7 @@
         <plugin>
           <groupId>net.revelc.code</groupId>
           <artifactId>impsort-maven-plugin</artifactId>
-          <version>1.2.0</version>
+          <version>1.4.1</version>
           <configuration>
             <groups>java.,javax.,org.,com.</groups>
           </configuration>
@@ -244,7 +242,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>3.0.0</version>
+          <version>3.1.0</version>
         </plugin>
         <plugin>
           <groupId>com.github.spotbugs</groupId>
@@ -438,7 +436,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
-        <version>${mavenPluginToolsVersion}</version>
+        <version>3.6.0</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
