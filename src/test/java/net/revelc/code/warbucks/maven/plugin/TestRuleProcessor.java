@@ -3,7 +3,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,18 +14,16 @@
 
 package net.revelc.code.warbucks.maven.plugin;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.junit.Test;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.Test;
 
 public class TestRuleProcessor {
 
@@ -84,26 +82,27 @@ public class TestRuleProcessor {
    * @return a mock Rule having passed modifiers
    */
   private static Rule createRule(EnumSet<Modifier> modifiers) {
-    Rule rule = Mockito.mock(Rule.class);
-    for (Modifier mod : Modifier.values()) {
-      boolean value = modifiers.contains(mod);
-      switch (mod) {
-        case PUBLIC:
-          Mockito.when(rule.getIncludePublicClasses()).thenReturn(value);
-          break;
-        case PACKAGE_PRIVATE:
-          Mockito.when(rule.getIncludePackagePrivateClasses()).thenReturn(value);
-          break;
-        case PROTECTED:
-          Mockito.when(rule.getIncludeProtectedClasses()).thenReturn(value);
-          break;
-        case PRIVATE:
-          Mockito.when(rule.getIncludePrivateClasses()).thenReturn(value);
-          break;
-        default:
-          throw new RuntimeException("Unsupported modififer:" + mod);
+    Rule rule = new Rule() {
+      @Override
+      public boolean getIncludePublicClasses() {
+        return modifiers.contains(Modifier.PUBLIC);
       }
-    }
+
+      @Override
+      public boolean getIncludePackagePrivateClasses() {
+        return modifiers.contains(Modifier.PACKAGE_PRIVATE);
+      }
+
+      @Override
+      public boolean getIncludeProtectedClasses() {
+        return modifiers.contains(Modifier.PROTECTED);
+      }
+
+      @Override
+      public boolean getIncludePrivateClasses() {
+        return modifiers.contains(Modifier.PRIVATE);
+      }
+    };
     return rule;
   }
 

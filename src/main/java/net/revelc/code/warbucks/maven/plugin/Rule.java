@@ -3,7 +3,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,8 +16,8 @@ package net.revelc.code.warbucks.maven.plugin;
 
 public class Rule {
 
-  private String classAnnotationPattern;
-  private String classPattern;
+  private String classAnnotationPattern = null;
+  private String classPattern = null;
   private boolean includeMainClasses = true;
   private boolean includeTestClasses = false;
   private boolean includePublicClasses = true;
@@ -25,8 +25,16 @@ public class Rule {
   private boolean includeProtectedClasses = true;
   private boolean includePrivateClasses = true;
 
+  public void setClassAnnotationPattern(String pattern) {
+    classAnnotationPattern = pattern;
+  }
+
   public String getClassAnnotationPattern() {
     return classAnnotationPattern;
+  }
+
+  public void setClassPattern(String pattern) {
+    classPattern = pattern;
   }
 
   public String getClassPattern() {
