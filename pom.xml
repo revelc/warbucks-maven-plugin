@@ -19,7 +19,7 @@
   <parent>
     <groupId>net.revelc.code</groupId>
     <artifactId>revelc</artifactId>
-    <version>5</version>
+    <version>6</version>
   </parent>
   <artifactId>warbucks-maven-plugin</artifactId>
   <version>1.2.0-SNAPSHOT</version>
@@ -49,7 +49,7 @@
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
-        <version>33.1.0-jre</version>
+        <version>33.2.1-jre</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
