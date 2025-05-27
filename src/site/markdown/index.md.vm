@@ -16,23 +16,27 @@
 
 #set ($d = "$")
 
-## Description
+${project.name}
+===============
 
-  This `warbucks-maven-plugin` makes it possible to evaluate your project's
-  classes to ensure they are annotated as desired.
+${project.description}
 
-  You can specify as many rules as you like, and each one will be evaluated in
-  order. The build will fail if any rule fails. By default, it runs at the
-  process-test-classes phase of the [Maven build lifecycle][1]. This is to
-  ensure it runs after all classes have been compiled, but before any tests are
-  run.
+This `${project.artifactId}` makes it possible to evaluate your project's
+classes to ensure they are annotated as desired.
 
-  A rule is composed of a pattern for identifying the classes to evaluate, and
-  a pattern for the annotations one requires to be used.
+You can specify as many rules as you like, and each one will be evaluated in
+order. The build will fail if any rule fails. By default, it runs at the
+process-test-classes phase of the [Maven build lifecycle][1]. This is to
+ensure it runs after all classes have been compiled, but before any tests are
+run.
 
-## Getting Started
+A rule is composed of a pattern for identifying the classes to evaluate, and
+a pattern for the annotations one requires to be used.
 
-  To add this plugin to your project, configure the plugin similarly to:
+Getting Started
+---------------
+
+To add this plugin to your project, configure the plugin similarly to:
 
 ```xml
   <build>
@@ -73,7 +77,7 @@
   </build>
 ```
 
-  and build your project, similarly to (it runs at the verify phase by default):
+and build your project, similarly to (it runs at the [verify][1] phase by default):
 
 ```
 mvn verify
